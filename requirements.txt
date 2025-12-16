@@ -1,3 +1,6 @@
-streamlit
-transformers
 torch
+torchvision
+torchaudio
+accelerate
+transformers
+streamlit
