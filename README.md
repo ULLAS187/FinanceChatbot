@@ -17,10 +17,7 @@ A smart, privacy-focused financial advisor powered by the **IBM Granite 3.2 2B**
 
 2.  **Install dependencies**:
     ```bash
-<<<<<<< HEAD
-=======
     pip install -r requirements.txt
->>>>>>> 8dc12b0 (requirements)
     ```
 
 ## ▶️ Usage
