@@ -11,7 +11,7 @@ A smart, privacy-focused financial advisor powered by the **IBM Granite 3.2 2B**
 
 1.  **Clone the repository**:
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/ULLAS187/FinanceChatbot.git
     cd ibmgranite
     ```
 
