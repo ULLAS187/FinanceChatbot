@@ -29,5 +29,5 @@ streamlit run demo.py
 
 The application will launch in your default web browser at `http://localhost:8501`.
 
-the local model will be downloaded automatically when run the project for first time.
+the local model will be downloaded automatically when you run the project for the first time.
 To run it using gpu install cuda and run the project.
