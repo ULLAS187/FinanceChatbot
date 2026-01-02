@@ -2,6 +2,11 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import time
+import matplotlib.pyplot as plt
+
+# Page navigation
+st.sidebar.markdown("## 🧭 Navigation")
+page = st.sidebar.radio("Select Page", ["Chatbot", "Budget Planner"])
 
 # <CHANGE> Configure page with wide layout and custom theme
 st.set_page_config(
@@ -132,30 +137,82 @@ if "chat_history" not in st.session_state:
 if "show_summary" not in st.session_state:
     st.session_state.show_summary = False
 
-# Load model
-tokenizer, model, device = load_model()
+def budget_planner():
+    st.markdown("## 📊 Budget Planner")
+    st.write("Plan your monthly budget and understand your spending pattern.")
 
-if model is None:
+    st.markdown("### 💰 Income")
+    income = st.number_input("Monthly Income (₹)", min_value=0, step=1000)
+
+    st.markdown("### 💸 Expenses")
+    rent = st.number_input("Rent / Housing (₹)", min_value=0, step=500)
+    food = st.number_input("Food (₹)", min_value=0, step=500)
+    transport = st.number_input("Transport (₹)", min_value=0, step=500)
+    entertainment = st.number_input("Entertainment (₹)", min_value=0, step=500)
+    others = st.number_input("Other Expenses (₹)", min_value=0, step=500)
+
+    total_expenses = rent + food + transport + entertainment + others
+    savings = income - total_expenses
+
+    st.markdown("---")
+    st.markdown("### 📌 Budget Summary")
+
+    col1, col2 = st.columns(2)
+    col1.metric("Total Expenses", f"₹ {total_expenses}")
+    col2.metric("Savings", f"₹ {savings}")
+
+    if savings > 0:
+        st.success("✅ You are saving money. Keep it up!")
+    elif savings == 0:
+        st.warning("⚠️ You are breaking even. Try to reduce expenses.")
+    else:
+        st.error("❌ You are overspending. Budget adjustment needed.")
+
+    if total_expenses > 0:
+        st.markdown("### 📈 Expense Distribution")
+
+        labels = ["Rent", "Food", "Transport", "Entertainment", "Others"]
+        values = [rent, food, transport, entertainment, others]
+
+        fig, ax = plt.subplots()
+        ax.pie(values, labels=labels, autopct="%1.1f%%", startangle=90)
+        ax.axis("equal")
+        st.pyplot(fig)
+
+    st.markdown("---")
+    st.info("💡 Tip: Try following the 50-30-20 rule for better financial health.")
+
+
+# Load model
+if page == "Chatbot":
+    tokenizer, model, device = load_model()
+else:
+    tokenizer, model, device = None, None, None
+
+
+if page == "Chatbot" and model is None:
     st.error("⚠️ Unable to load model. Please check your dependencies.")
     st.stop()
 
+
 # <CHANGE> Add topic suggestions
-st.markdown("### 💭 Quick Topics")
-col1, col2, col3, col4 = st.columns(4)
+if page == "Chatbot":
+	st.markdown("### 💭 Quick Topics")
+	col1, col2, col3, col4 = st.columns(4)
 
-topics = {
-    col1: ("💰", "Saving Tips"),
-    col2: ("📈", "Investing"),
-    col3: ("🏦", "Budgeting"),
-    col4: ("💳", "Debt Help")
-}
+	topics = {
+	    col1: ("💰", "Saving Tips"),
+	    col2: ("📈", "Investing"),
+	    col3: ("🏦", "Budgeting"),
+	    col4: ("💳", "Debt Help")
+	}
 
-for col, (emoji, topic) in topics.items():
-    with col:
-        if st.button(f"{emoji} {topic}", use_container_width=True, key=topic):
-            st.session_state.user_input = f"Tell me about {topic.lower()}"
+	for col, (emoji, topic) in topics.items():
+	    with col:
+	        if st.button(f"{emoji} {topic}", use_container_width=True, key=topic):
+	            st.session_state.user_input = f"Tell me about {topic.lower()}"
 
-st.markdown("---")
+	st.markdown("---")
 
 # <CHANGE> Enhanced chat input with better styling
 user_input = st.chat_input(
@@ -229,6 +286,10 @@ if st.session_state.chat_history:
     with col3:
         avg_length = sum(len(m["content"].split()) for m in st.session_state.chat_history) / len(st.session_state.chat_history)
         st.metric("Avg Response Length", f"{int(avg_length)} words")
+
+if page == "Budget Planner":
+    budget_planner()
+
 
 # <CHANGE> Add footer with disclaimer
 st.markdown("---")
