@@ -1,0 +1,12 @@
+##Guide to run IBM Granite 3.2 2B Instruct locally (with prerequisites):##
+
+1.	Install Python 3.9+ and ensure pip is updated.
+2.	Make sure you have Git installed to clone repos if needed.
+3.	A system with ≥8 GB RAM is recommended (GPU optional; CPU works for 2B).
+4.	Create and activate a virtual environment (python -m venv venv).
+5.	Install dependencies: pip install torch transformers accelerate sentencepiece.
+6.	Download the IBM Granite 3.2 2B Instruct model from Hugging Face (requires login).
+7.	Load the model using transformers with AutoModelForCausalLM and AutoTokenizer.
+8.	Use device_map="auto" for automatic CPU/GPU placement.
+9.	Run inference by passing prompts with an instruction-style format.
+10.	This model is by IBM and is suitable for private, offline inference.
