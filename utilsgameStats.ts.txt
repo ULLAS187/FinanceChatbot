@@ -1,0 +1,30 @@
+export type GameMove = {
+  from: string;
+  to: string;
+  piece: string;
+  capture?: boolean;
+};
+
+export type GameStats = {
+  totalMoves: number;
+  captures: number;
+  piecesUsed: string[];
+};
+
+export function calculateGameStats(moves: GameMove[]): GameStats {
+  const piecesSet = new Set<string>();
+  let captureCount = 0;
+
+  for (let i = 0; i < moves.length; i++) {
+    piecesSet.add(moves[i].piece);
+    if (moves[i].capture) {
+      captureCount++;
+    }
+  }
+
+  return {
+    totalMoves: moves.length,
+    captures: captureCount,
+    piecesUsed: Array.from(piecesSet),
+  };
+}
